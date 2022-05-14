@@ -7,16 +7,20 @@ const router=Router();
 
 const todos:Todo[]=[];
 
+type requestBody = {text:string};
+type requestId = {id:string};
+type requestBodyId={id:string;text:string};
+
 router.get('/',(req,res,next)=>{
     res.status(200).json({todos:todos});
 })
 
 router.post('/todo',(req,res,next)=>{
-    console.log(req.body);
+    const body=req.body as requestBody;
     try{
         const newTodo:Todo = {
             id:new Date().toString(),
-            text:req.body.text
+            text:body.text
         };
         todos.push(newTodo);
         res.json(todos);    
@@ -27,10 +31,10 @@ router.post('/todo',(req,res,next)=>{
 })
 
 router.post('/delete',(req,res,next)=>{
-    let delId=req.body.id;
+    let delId=req.body as requestId;
     let find;
     for(let i=0;i<todos.length;i++){
-        if(todos[i].id===delId)
+        if(todos[i].id===delId.id)
         {
             find=i;
             break;
@@ -48,11 +52,12 @@ router.post('/delete',(req,res,next)=>{
 
 router.post('/edit',(req,res,next)=>{
     let find;
+    const body=req.body as requestBodyId;
     for(let i=0;i<todos.length;i++){
-        if(todos[i].id===req.body.id)
+        if(todos[i].id===body.id)
         {
             find=1;
-            todos[i].text=req.body.text;
+            todos[i].text=body.text;
             break;
         }
     }
